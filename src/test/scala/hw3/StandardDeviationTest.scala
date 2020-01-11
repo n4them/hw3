@@ -23,4 +23,21 @@ class StandardDeviationTest extends FunSuite with Matchers {
      */
     standardDeviation(List(42)) shouldBe 0.0
   }
+
+  test("stddev test. Two same numbers"){
+    standardDeviation(List(1,1)) shouldBe 0
+  }
+
+  test("stddev test. Two numbers"){
+    standardDeviation(List(1,2)) shouldBe 0.5 +- 0.01
+  }
+
+  test("stddev test. 4 numbers"){
+    standardDeviation(List(1,2,1,2)) shouldBe 0.5 +- 0.01
+  }
+
+  test("stddev test. empty list"){
+    assertThrows[IllegalArgumentException](standardDeviation(List.empty))
+  }
+
 }
