@@ -20,7 +20,12 @@ object Main {
         variation ^ 0.5
     }
 
-
+    /**
+     * transform Seq[char] to string with only values
+     *
+     * @param letters Seq of chars
+     * @return
+     */
     def seqToString(letters: Seq[Char]): String = {
         val result: StringBuilder = new StringBuilder()
         for (c <- letters) {
@@ -40,6 +45,13 @@ object Main {
             }
         }
 
+        /**
+         * Count letters
+         *
+         * @param corpus  string to parse
+         * @param letters result accumulator
+         * @return accumulator
+         */
         @tailrec
         def parserCorups(corpus: List[Char], letters: Alphabet): Alphabet = {
             if (corpus.nonEmpty) {
@@ -59,15 +71,20 @@ object Main {
         seqToString(orderedLetters)
     }
 
-
-    def gray(bits: Int): List[String] = ???
-
     def romanji(katakana: String): String = {
         val before = "[ュャョー]".r
         val after = "[ッ]".r
         val skipSymbols = "[ ,!\n?]".r
 
+        @tailrec
         def loop(i: Int, list: List[Char]): List[Char] = {
+            /**
+             * Transform katakana char to romanji char
+             *
+             * @param i    position of char in katakana
+             * @param list list of transformed chars
+             * @return list with added char
+             */
             def parser(i: Int, list: List[Char]): List[Char] = katakana.charAt(i) match {
                 case char: Char if before.matches(char.toString) &&
                     ((i == 0) || skipSymbols.matches(list.head.toString)) =>
@@ -113,9 +130,45 @@ object Main {
         seqToString(loop(0, List.empty[Char]).reverse)
     }
 
-    def ア(): Unit = {
+    def gray(bits: Int): List[String] = {
+        require(bits > 0)
+        val ONE = "1"
+        val ZERO = "0"
+
+        @tailrec
+        def loop(i: Int, list: List[String]): List[String] = {
+            if (i > bits) {
+                list
+            } else {
+                loop(i + 1, list.map(x => ZERO + x) ::: list.reverse.map(x => ONE + x))
+            }
+        }
+
+        loop(2, List[String](ZERO, ONE))
+
 
     }
+
+    def gray2(bits: Int): List[String] = {
+        require(bits > 0)
+        val end = 2.0 ^ bits
+
+        def binaryToGrayToString(n: Int): String = {
+            val g = (n ^ (n >> 1)).toBinaryString
+            "0" * (bits - g.length) + g
+        }
+
+        @tailrec
+        def loop2(i: Int, list: List[String]): List[String] = {
+            if (i < 0) {
+                list
+            } else {
+                loop2(i - 1, binaryToGrayToString(i) :: list)
+            }
+        }
+        loop2((end-1).toInt, List.empty[String])
+    }
+
 }
 
 object Katakana {
